@@ -42,6 +42,8 @@ if [ ! -f /etc/systemd/system/hr-form.service ]; then
   exit 0
 fi
 if [ "$SEED" = "--seed" ]; then
+  # 重置演示数据时一并清空上传目录，否则磁盘上会留下数据库里已不存在的文件
+  sudo find /var/lib/hr-form/uploads -mindepth 1 -delete
   # env 文件权限 600、属主 root（systemd 以 root 读取），所以 seed 也用 root 读取后执行；它只连数据库，不写文件。
   sudo bash -c 'set -euo pipefail; set -a; . /etc/hr-form/env; set +a; cd /opt/hr-form && node dist/seed.js --reset'
 fi
