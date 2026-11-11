@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+uploads/
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_*
+*_ed25519*
+.DS_Store
+**/assets/fonts/*.otf
+.pglite/

@@ -1,0 +1,531 @@
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #1f2328;
+  --muted: #6b7280;
+  --border: #d9dde3;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc2626;
+  --warning-bg: #fff7e6;
+  --warning-border: #f5b041;
+  --info-bg: #eef4ff;
+  --radius: 8px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+h3 {
+  font-size: 14px;
+  margin: 16px 0 8px;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+}
+
+input[type="checkbox"],
+input[type="file"] {
+  width: auto;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #bfd3fe;
+  border-color: var(--primary);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+button.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+button.link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--primary);
+}
+
+button.link.danger {
+  color: var(--danger);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 12px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page.narrow {
+  max-width: 760px;
+}
+
+.page-loading {
+  text-align: center;
+  color: var(--muted);
+  padding: 48px;
+}
+
+.center-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.login-card {
+  width: 360px;
+}
+
+.success h1 {
+  color: #15803d;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 16px;
+}
+
+.topbar nav a.active {
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ---- 表单 ---- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.field > label {
+  font-weight: 500;
+}
+
+.required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: 12px;
+  margin: 2px 0 0;
+}
+
+.form-error {
+  color: var(--danger);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 12px 0;
+}
+
+.form-error p {
+  margin: 2px 0;
+}
+
+.group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px 4px;
+  margin: 0 0 14px;
+}
+
+.group > legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+.repeater-row {
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 8px 12px 0;
+  margin-bottom: 10px;
+  background: #fafbfc;
+}
+
+.repeater-row-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.repeater > button.secondary {
+  margin-bottom: 10px;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 16px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px;
+}
+
+.file-list li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.notice {
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 12px 0;
+}
+
+.notice-warning {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+}
+
+.notice-info {
+  background: var(--info-bg);
+  border: 1px solid #c7d7fe;
+}
+
+.notice .actions {
+  margin-top: 8px;
+}
+
+.submit-bar,
+.publish-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.publish-bar input {
+  max-width: 320px;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  font-size: 12px;
+  border-radius: 10px;
+  background: var(--info-bg);
+  color: var(--primary);
+}
+
+/* ---- 表格 ---- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eef0f3;
+  vertical-align: top;
+}
+
+.table th {
+  background: #fafbfc;
+  font-weight: 600;
+}
+
+.table.clickable tbody tr {
+  cursor: pointer;
+}
+
+.table.clickable tbody tr:hover {
+  background: #f5f8ff;
+}
+
+.changes {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.pager {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.filter-bar .filter-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.inline-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.inline-form h2,
+.inline-form .form-error {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* ---- Form Builder ---- */
+
+.builder {
+  display: grid;
+  grid-template-columns: 280px 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.field-tree {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.field-tree .field-tree {
+  padding-left: 14px;
+  border-left: 1px dashed var(--border);
+}
+
+.tree-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  margin-bottom: 2px;
+}
+
+.tree-item.selected {
+  border-color: var(--primary);
+  background: var(--info-bg);
+}
+
+.tree-item.deprecated span:first-child {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editor-head {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.rules .rule-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr auto;
+  gap: 6px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.json-editor textarea {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .builder {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
+  }
+
+  .grid-2,
+  .inline-form,
+  .filter-bar .filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 放在最后：错误态的选择器优先级更高，覆盖前面各处输入框的样式 */
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea {
+  border-color: var(--danger);
+}

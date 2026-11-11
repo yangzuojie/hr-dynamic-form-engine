@@ -1,0 +1,21 @@
+{
+  "name": "hr-dynamic-form-engine",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.6.2",
+  "scripts": {
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "check": "biome check . && pnpm -r --if-present typecheck",
+    "check:fix": "biome check --write .",
+    "test": "pnpm -r --if-present test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.6",
+    "typescript": "^7.0.2"
+  }
+}

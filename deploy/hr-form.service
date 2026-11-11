@@ -1,0 +1,24 @@
+[Unit]
+Description=HR 动态表单与通用接口引擎
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=hrform
+Group=hrform
+WorkingDirectory=/opt/hr-form
+EnvironmentFile=/etc/hr-form/env
+# 908MB 内存的小机器：限制 V8 堆，留给 PostgreSQL 和系统
+ExecStart=/usr/bin/node --max-old-space-size=256 --enable-source-maps /opt/hr-form/dist/main.js
+Restart=on-failure
+RestartSec=3
+# 基础加固：只读系统目录，只允许写上传目录
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/hr-form
+
+[Install]
+WantedBy=multi-user.target
