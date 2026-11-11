@@ -77,6 +77,10 @@ describe('场景二 Q0：通用提交接口', () => {
     );
     expect(after.rows.map((r) => r.status)).toEqual(['done', 'done', 'done']);
     expect(after.rows[2]?.result).toMatchObject({ simulated: true });
+    // PDF 只嵌入用到的字（HarfBuzz 子集化）。如果退回到嵌入整个中文字体，会变成 7MB 以上。
+    const pdfSize = Number(after.rows[1]?.result?.size);
+    expect(pdfSize).toBeGreaterThan(1000);
+    expect(pdfSize).toBeLessThan(100_000);
   });
 });
 

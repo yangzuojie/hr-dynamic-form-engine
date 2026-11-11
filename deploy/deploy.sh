@@ -34,10 +34,16 @@ ssh "${SSH_OPTS[@]}" "$SSH_TARGET" "SEED=${1:-}" 'bash -s' <<'REMOTE'
 set -euo pipefail
 sudo rm -rf /tmp/hr-form-new && mkdir -p /tmp/hr-form-new
 tar -C /tmp/hr-form-new -xzf /tmp/hr-form-release.tgz
+sudo mkdir -p /opt/hr-form
 sudo rsync -a --delete /tmp/hr-form-new/hr-form/ /opt/hr-form/
 sudo chown -R root:root /opt/hr-form
+if [ ! -f /etc/systemd/system/hr-form.service ]; then
+  echo "发布包已上传到 /opt/hr-form。首次部署请先执行：sudo bash /opt/hr-form/deploy/setup-server.sh <域名>，再重新运行 deploy.sh"
+  exit 0
+fi
 if [ "$SEED" = "--seed" ]; then
-  sudo -u hrform bash -c 'set -a; . /etc/hr-form/env; set +a; cd /opt/hr-form && node dist/seed.js --reset'
+  # env 文件权限 600、属主 root（systemd 以 root 读取），所以 seed 也用 root 读取后执行；它只连数据库，不写文件。
+  sudo bash -c 'set -euo pipefail; set -a; . /etc/hr-form/env; set +a; cd /opt/hr-form && node dist/seed.js --reset'
 fi
 sudo systemctl restart hr-form
 sleep 2

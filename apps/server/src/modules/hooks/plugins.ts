@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path';
 import { type FormData, type FormSchema, isPlainObject } from '@hr/schema-core';
 import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument, rgb } from 'pdf-lib';
+import subsetFont from 'subset-font';
 import type { PluginRegistry } from './registry';
 import type { AfterSaveJob, PluginDeps, SubmissionPlugin } from './types';
 
@@ -89,25 +90,41 @@ async function renderContract(
   job: AfterSaveJob,
   fontPath: string,
 ): Promise<Uint8Array> {
-  const pdf = await PDFDocument.create();
-  pdf.registerFontkit(fontkit);
-  const font = await pdf.embedFont(await readFile(fontPath), { subset: true });
-  const page = pdf.addPage([595, 842]);
-  let y = 780;
-  const line = (text: string, size = 12): void => {
-    page.drawText(text, { x: 60, y, size, font, color: rgb(0.1, 0.1, 0.1) });
-    y -= size * 2;
-  };
-  line('入职确认书（演示）', 20);
-  line(`表单：${schema.title}（v${job.schemaVersion}）`);
-  line(`记录编号：${job.submissionId}`);
-  line(`姓名：${displayName(data)}`);
+  const lines: Array<[text: string, size: number]> = [
+    ['入职确认书（演示）', 20],
+    [`表单：${schema.title}（v${job.schemaVersion}）`, 12],
+    [`记录编号：${job.submissionId}`, 12],
+    [`姓名：${displayName(data)}`, 12],
+  ];
   for (const field of schema.fields) {
     const value = data[field.key];
-    if (field.sensitive || field.type !== 'input' || value === undefined) continue;
-    line(`${field.label}：${String(value)}`);
+    // 姓名已在上面单独一行；敏感字段（手机号、薪资）不写进合同演示文件
+    if (
+      NAME_KEYS.includes(field.key) ||
+      field.sensitive ||
+      field.type !== 'input' ||
+      value === undefined
+    ) {
+      continue;
+    }
+    lines.push([`${field.label}：${String(value)}`, 12]);
   }
-  line(`生成时间：${new Date().toISOString()}`, 10);
+  lines.push([`生成时间：${new Date().toISOString()}`, 10]);
+
+  // 中文字体约 8MB。先用 HarfBuzz 只保留用到的字（几 KB），再整体嵌入。
+  // 不用 pdf-lib 自带的 subset：它对 CFF 字形的 OTF 字体子集化有缺陷，中文会变成方框。
+  const glyphs = await subsetFont(await readFile(fontPath), lines.map(([text]) => text).join(''), {
+    targetFormat: 'sfnt',
+  });
+  const pdf = await PDFDocument.create();
+  pdf.registerFontkit(fontkit);
+  const font = await pdf.embedFont(glyphs, { subset: false });
+  const page = pdf.addPage([595, 842]);
+  let y = 780;
+  for (const [text, size] of lines) {
+    page.drawText(text, { x: 60, y, size, font, color: rgb(0.1, 0.1, 0.1) });
+    y -= size * 2;
+  }
   return pdf.save();
 }
 
@@ -138,8 +155,11 @@ async function loadSubmission(db: PluginDeps['db'], job: AfterSaveJob) {
   return row;
 }
 
+/** 不同表单、不同版本里姓名字段的 key（v3 叫 employeeName，v4 改名为 fullName）。 */
+const NAME_KEYS = ['fullName', 'employeeName', 'name'];
+
 function displayName(data: FormData): string {
-  const name = data.fullName ?? data.employeeName ?? data.name;
+  const name = NAME_KEYS.map((key) => data[key]).find((value) => typeof value === 'string');
   return typeof name === 'string' ? name : '（未填写姓名）';
 }
 

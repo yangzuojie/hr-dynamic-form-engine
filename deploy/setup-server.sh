@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# 服务器一次性初始化（Ubuntu，需要 sudo）。用法：sudo bash setup-server.sh <域名> <证书通知邮箱>
+# 服务器一次性初始化（Ubuntu，需要 sudo）。用法：sudo bash setup-server.sh <域名> [证书通知邮箱]
+# 先用 deploy.sh 把发布包上传到 /opt/hr-form，再执行本脚本。
 # 做的事：2G swap、Node.js、PostgreSQL（调小内存）、Nginx、certbot、运行用户和目录、数据库和环境变量。
 # 可重复执行：已经做过的步骤会跳过。
 set -euo pipefail
 
-SERVER_NAME="${1:?用法：setup-server.sh <域名> <邮箱>}"
-CERT_EMAIL="${2:?用法：setup-server.sh <域名> <邮箱>}"
+SERVER_NAME="${1:?用法：setup-server.sh <域名> [邮箱]}"
+CERT_EMAIL="${2:-}"
 
 echo "== swap（908MB 内存的机器，防止构建或高峰时 OOM）"
 if ! swapon --show | grep -q /swapfile; then
@@ -65,6 +66,16 @@ echo "== Nginx"
 sed "s/__SERVER_NAME__/${SERVER_NAME}/" /opt/hr-form/deploy/nginx.conf > /etc/nginx/sites-available/hr-form
 ln -sf /etc/nginx/sites-available/hr-form /etc/nginx/sites-enabled/hr-form
 rm -f /etc/nginx/sites-enabled/default
+# 直接用 IP 或其他 Host 访问时，跳转到正式域名（单独一个文件，certbot 不会改写它）
+cat > /etc/nginx/sites-available/hr-form-default <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 301 https://${SERVER_NAME}\$request_uri;
+}
+EOF
+ln -sf /etc/nginx/sites-available/hr-form-default /etc/nginx/sites-enabled/hr-form-default
 nginx -t
 systemctl reload nginx
 
@@ -74,7 +85,9 @@ systemctl daemon-reload
 systemctl enable hr-form
 
 echo "== HTTPS（Let's Encrypt，需要 80 端口可从外网访问）"
-certbot --nginx --non-interactive --agree-tos -m "$CERT_EMAIL" -d "$SERVER_NAME" --redirect || \
+# 不提供邮箱时不注册邮箱（只是收不到到期提醒，certbot 的定时任务会自动续期）
+if [ -n "$CERT_EMAIL" ]; then EMAIL_ARGS=(-m "$CERT_EMAIL"); else EMAIL_ARGS=(--register-unsafely-without-email); fi
+certbot --nginx --non-interactive --agree-tos "${EMAIL_ARGS[@]}" -d "$SERVER_NAME" --redirect || \
   echo "证书申请失败，暂时只提供 HTTP；排查后重新执行本脚本即可"
 
 echo "初始化完成。"

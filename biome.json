@@ -1,9 +1,13 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/dist", "!**/coverage", "!**/*.gen.ts"]
+    "includes": ["**", "!**/dist", "!**/coverage", "!**/*.gen.ts", "!**/*.md"]
   },
   "formatter": {
     "enabled": true,
@@ -13,16 +17,32 @@
     "lineEnding": "lf"
   },
   "javascript": {
-    "formatter": { "quoteStyle": "single", "semicolons": "always", "trailingCommas": "all" }
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
   },
-  "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
       "preset": "recommended",
       "suspicious": {
         "noExplicitAny": "error",
-        "noConsole": { "level": "warn", "options": { "allow": ["error", "warn"] } }
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["error", "warn"]
+          }
+        }
       },
       "style": {
         "noNonNullAssertion": "error",
@@ -33,24 +53,48 @@
         "useNamingConvention": "off",
         "noDefaultExport": "error"
       },
-      "correctness": { "noUnusedVariables": "error", "noUnusedImports": "error" },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
+      },
       "complexity": {
         "noExcessiveCognitiveComplexity": {
           "level": "warn",
-          "options": { "maxAllowedComplexity": 20 }
+          "options": {
+            "maxAllowedComplexity": 20
+          }
         }
       }
     }
   },
   "overrides": [
     {
-      "includes": ["**/*.config.ts", "**/*.config.js", "**/vite.config.*", "**/vitest.config.*"],
-      "linter": { "rules": { "style": { "noDefaultExport": "off" } } }
+      "includes": [
+        "**/*.config.ts",
+        "**/*.config.js",
+        "**/vite.config.*",
+        "**/vitest.config.*",
+        "**/*.d.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
     },
     {
       "includes": ["**/*.test.ts", "**/*.test.tsx", "**/scripts/**"],
       "linter": {
-        "rules": { "suspicious": { "noConsole": "off" }, "style": { "noNonNullAssertion": "off" } }
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
       }
     }
   ]
